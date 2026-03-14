@@ -1,7 +1,6 @@
 # Ragstack
 
-`ragstack` is a local Python RAG playground for loading source documents,
-splitting them into clean chunks, and preparing them for a vector store.
+This project implements a robust, enterprise-ready Retrieval-Augmented Generation (RAG) System designed to bridge the gap between simple AI prototypes and scalable, reliable production applications. Unlike basic RAG pipelines, this architecture prioritizes high-precision retrieval through Hybrid Search (BM25 + Vector), eliminates hallucinations using Strict Citation Enforcement, and ensures long-term reliability through an Automated Evaluation Pipeline (Ragas). Built with a focus on modularity and "Faithfulness" metrics, this system provides a blueprint for deploying AI that enterprise users can actually trust.
 
 ## Current Status
 
