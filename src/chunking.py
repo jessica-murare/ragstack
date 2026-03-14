@@ -17,7 +17,7 @@ class DocumentChunker:
         chunk_size: int = 600,       # target tokens per chunk
         chunk_overlap: int = 100,    # overlap tokens between chunks
         model_name: str = "gpt2",    # tokenizer — gpt2 is free, no API needed
-        min_chunk_length: int = 50,  # discard junk chunks (nav menus, headers)
+        min_chunk_length: int = 100,  # discard junk chunks (nav menus, headers)
     ):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
@@ -48,6 +48,13 @@ class DocumentChunker:
         # Discard chunks that are mostly newlines (web nav junk)
         newline_ratio = stripped.count("\n") / max(len(stripped), 1)
         if newline_ratio > 0.3:
+            return False
+        #Wikipedia-specific footer junk
+        if stripped.startswith("Category") or stripped.startswith("Retrieved from"):
+            return False
+        #chunks with very few words are unlikely to be useful
+        word_count = len(stripped.split())
+        if word_count < 20:
             return False
         return True
 
