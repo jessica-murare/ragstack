@@ -1,3 +1,99 @@
-1. install ollama
-2. pull the model llama3.2 (good model for RAG fast+capable)
-3. pull the model nomic-embed-text (embedding model critical for RAG)
+# Ragstack
+
+`ragstack` is a local Python RAG playground for loading source documents,
+splitting them into clean chunks, and preparing them for a vector store.
+
+## Current Status
+
+Implemented:
+- Document ingestion from PDF files
+- Document ingestion from Markdown files
+- Web page loading from URLs
+- Token-aware document chunking with metadata enrichment
+
+In progress:
+- Vector store integration in `src/vector_store.py`
+
+## Project Structure
+
+```text
+ragstack/
+|-- config/
+|-- data/
+|   `-- raw/              # local source documents, ignored by git
+|-- src/
+|   |-- ingestion.py      # loads PDFs, Markdown, and web pages
+|   |-- chunking.py       # splits documents into token-based chunks
+|   `-- vector_store.py   # reserved for vector DB integration
+|-- .env
+|-- .gitignore
+|-- requirements.txt
+`-- Readme.md
+```
+
+## Setup
+
+1. Create and activate a virtual environment.
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Add environment variables in `.env`.
+
+Current example:
+
+```env
+USER_AGENT=groundtruth-rag/1.0
+```
+
+4. Install Ollama.
+5. Pull the local models used for a typical RAG stack:
+
+```bash
+ollama pull llama3.2
+ollama pull nomic-embed-text
+```
+
+## Ingestion
+
+`src/ingestion.py` loads content from:
+- `data/raw/*.pdf`
+- `data/raw/*.md`
+- URLs passed in at runtime
+
+Run it directly:
+
+```bash
+python src/ingestion.py
+```
+
+What it does:
+- creates `data/raw/` if it does not exist
+- loads supported local files recursively
+- fetches and parses web pages
+- returns LangChain `Document` objects with source metadata
+
+## Chunking
+
+`src/chunking.py` takes loaded documents and splits them into overlapping,
+token-based chunks using `RecursiveCharacterTextSplitter` plus `tiktoken`.
+
+Run it directly:
+
+```bash
+python src/chunking.py
+```
+
+What it does:
+- splits by token count instead of raw characters
+- prefers natural boundaries like paragraphs and sentences
+- filters low-quality chunks
+- adds chunk metadata such as `chunk_index` and `token_count`
+
+## Notes
+
+- `data/raw/` is ignored by git, so local source documents stay out of the repo.
+- `.env` is ignored by git, so keep secrets and machine-specific config there.
+- `src/vector_store.py` is currently a placeholder and still needs implementation.
