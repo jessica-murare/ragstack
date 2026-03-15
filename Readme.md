@@ -6,12 +6,6 @@ A production-grade Retrieval-Augmented Generation (RAG) system built with LangCh
 
 ---
 
-## Live Demo
-
-[ragstack.streamlit.app](https://ragstack.streamlit.app) — Upload a PDF or paste a URL, ask questions, get grounded answers with citations.
-
----
-
 ## What makes this production-grade
 
 Most RAG tutorials stop at "it retrieves stuff and generates an answer." This system adds the layers that make it actually reliable:
