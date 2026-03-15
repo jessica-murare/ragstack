@@ -1,0 +1,32 @@
+[
+  {
+    "id": "q001",
+    "question": "How is RAG evaluated?",
+    "expected_answer": "RAG systems are evaluated using benchmarks like BEIR and Natural Questions that test retrievability, retrieval accuracy, and generative quality.",
+    "source": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+  },
+  {
+    "id": "q002",
+    "question": "What are the limitations of RAG?",
+    "expected_answer": "RAG does not prevent hallucinations, LLMs can still misinterpret factually correct sources, and it does not eliminate the need for retraining.",
+    "source": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+  },
+  {
+    "id": "q003",
+    "question": "When was the term RAG first introduced?",
+    "expected_answer": "The term RAG was first introduced in a 2020 research paper.",
+    "source": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+  },
+  {
+    "id": "q004",
+    "question": "What is the capital of France?",
+    "expected_answer": "I cannot answer this based on the available documents.",
+    "source": null
+  },
+  {
+    "id": "q005",
+    "question": "How does RAG reduce hallucinations?",
+    "expected_answer": "RAG reduces hallucinations by having LLMs retrieve and incorporate information from external documents before generating responses, grounding answers in source material.",
+    "source": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+  }
+]

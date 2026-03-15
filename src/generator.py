@@ -37,11 +37,16 @@ class RAGGenerator:
     def __init__(
         self,
         model: str = "llama3.2",
-        temperature: float = 0.0,   # 0 = deterministic, no hallucination risk
+        temperature: float = 0.0,
+        prompt_template: str = None,   
     ):
-        print(f"  Loading LLM: {model}")
         self.llm = OllamaLLM(model=model, temperature=temperature)
-        self.prompt = RAG_PROMPT
+        # Use passed template or fall back to default
+        template = prompt_template or RAG_PROMPT.template
+        self.prompt = PromptTemplate(
+            input_variables=["context", "question"],
+            template=template,
+        )
 
     def _format_context(self, chunks: list[Document]) -> str:
         """

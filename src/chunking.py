@@ -56,6 +56,10 @@ class DocumentChunker:
         word_count = len(stripped.split())
         if word_count < 20:
             return False
+        if stripped.startswith("Jump to content"):
+            return False
+        if stripped.startswith("vte"):
+            return False
         return True
 
     def chunk_documents(self, documents: List[Document]) -> List[Document]:

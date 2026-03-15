@@ -1,0 +1,70 @@
+# .github/workflows/eval.yml
+name: RAG Quality Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Pull Ollama models
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          sleep 5
+          ollama pull llama3.2
+          ollama pull nomic-embed-text
+
+      - name: Run evaluation
+        run: python eval/evaluate.py
+
+      # If evaluate.py exits with code 1, this step never runs
+      # and GitHub marks the entire workflow as FAILED
+      - name: Upload eval report
+        uses: actions/upload-artifact@v3
+        with:
+          name: eval-report
+          path: eval/eval_report.json
+# ```
+
+# ---
+
+# ## You've built the complete system. Here's everything:
+# ```
+# ragstack/
+# ├── config/
+# │   └── settings.yaml        ✓ versioned prompts + config
+# ├── data/
+# │   ├── raw/                 ✓ drop PDFs/MD here
+# │   └── chroma/              ✓ persistent vector store
+# ├── src/
+# │   ├── ingestion.py         ✓ PDF + MD + web loading
+# │   ├── chunking.py          ✓ token-aware splitting
+# │   ├── vector_store.py      ✓ ChromaDB + embeddings
+# │   ├── retriever.py         ✓ hybrid BM25 + vector + re-ranker
+# │   ├── generator.py         ✓ grounded answers + refusal
+# │   ├── pipeline.py          ✓ single entry point
+# │   └── config.py            ✓ config loader
+# ├── eval/
+# │   ├── golden_dataset.json  ✓ 5 verified Q&A pairs
+# │   ├── evaluate.py          ✓ faithfulness scoring
+# │   └── eval_report.json     ✓ generated report
+# └── .github/
+#     └── workflows/
+#         └── eval.yml         ✓ CI quality gate

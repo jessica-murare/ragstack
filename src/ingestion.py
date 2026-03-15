@@ -43,14 +43,40 @@ class DocumentIngester:
         return docs
 
     def load_web(self, url: str) -> List[Document]:
-        """Scrape a web page and load its text content."""
+        """Scrape a web page, extract clean text only."""
         print(f"  Loading URL: {url}")
-        loader = WebBaseLoader(url)
-        docs = loader.load()
-        for doc in docs:
-            doc.metadata["source_type"] = "web"
-            doc.metadata["url"] = url
-        return docs
+        import requests
+        from bs4 import BeautifulSoup
+
+        headers = {"User-Agent": "ragstack/1.0"}
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Remove all navigation, sidebars, footers, scripts
+        for tag in soup(["nav", "header", "footer", "script",
+                        "style", "aside", "table"]):
+            tag.decompose()
+
+        # For Wikipedia specifically, grab only the article body
+        article = soup.find("div", {"id": "mw-content-text"})
+        if article:
+            text = article.get_text(separator="\n")
+        else:
+            text = soup.get_text(separator="\n")
+
+        # Clean up excessive whitespace
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        clean_text = "\n".join(lines)
+
+        doc = Document(
+            page_content=clean_text,
+            metadata={
+                "source": url,
+                "source_type": "web",
+                "url": url,
+            }
+        )
+        return [doc]
 
     def load_directory(self) -> List[Document]:
         """
@@ -126,3 +152,6 @@ if __name__ == "__main__":
     if docs:
         print(f"  Source: {docs[0].metadata}")
         print(f"  Content preview: {docs[0].page_content[:300]}...")
+
+    # print("\n=== Raw extracted text ===")
+    # print(docs[0].page_content[:3000])    

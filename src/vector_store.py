@@ -74,6 +74,14 @@ class VectorStore:
     def count(self) -> int:
         """How many chunks are currently stored."""
         return self.db._collection.count()
+    
+    def get_all_chunks(self) -> list:
+        """Retrieve all stored documents from ChromaDB."""
+        result = self.db.get(include=["documents", "metadatas"])
+        docs = []
+        for content, metadata in zip(result["documents"], result["metadatas"]):
+            docs.append(Document(page_content=content, metadata=metadata))
+        return docs
 
 
 # Quick test

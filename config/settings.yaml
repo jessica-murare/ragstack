@@ -1,0 +1,45 @@
+# config/settings.yaml
+llm:
+  model: llama3.2
+  temperature: 0.0
+
+embeddings:
+  model: nomic-embed-text
+
+retrieval:
+  top_k: 5
+  candidates: 20        # how many hybrid fetches before re-ranking
+  bm25_weight: 0.4
+  vector_weight: 0.6
+
+reranker:
+  model: cross-encoder/ms-marco-MiniLM-L-6-v2
+  enabled: true
+
+vector_store:
+  collection_name: ragstack
+  persist_dir: data/chroma
+
+chunking:
+  chunk_size: 600
+  chunk_overlap: 100
+  min_chunk_length: 100
+
+# Version your prompts here — change behaviour without touching code
+prompts:
+  rag_prompt: |
+    You are a precise assistant that answers questions strictly based on the provided context.
+
+    CONTEXT:
+    {context}
+
+    RULES:
+    - Answer ONLY using information from the context above
+    - If the context does not contain enough information to answer, respond with:
+      "I cannot answer this based on the available documents."
+    - Always cite which part of the context supports your answer
+    - Be concise and factual
+
+    QUESTION: {question}
+
+    ANSWER:
