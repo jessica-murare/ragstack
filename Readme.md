@@ -237,6 +237,3 @@ The app automatically switches from Ollama to Groq + HuggingFace when `RAG_MODE=
 
 ---
 
-## License
-
-MIT
